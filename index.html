@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse 24 — Latest World News</title>
+<meta name="description" content="Pulse 24 — a fast, editorial international news reader blending BBC News, The Guardian and Al Jazeera: world, business, technology, science, health, sport and entertainment headlines.">
+<meta name="theme-color" content="#c8102e">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23c8102e'/><text x='16' y='24' font-size='20' font-family='Georgia,serif' font-weight='bold' fill='white' text-anchor='middle'>P</text></svg>">
+<link rel="preconnect" href="https://ichef.bbci.co.uk">
+<link rel="preconnect" href="https://i.guim.co.uk">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-label">Breaking</span>
+    <div class="ticker-track"><div class="ticker-move" id="tickerMove"></div></div>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="header-top">
+    <div class="wrap header-top-inner">
+      <div class="date-str" id="dateStr"></div>
+      <div class="header-top-actions">
+        <button class="chip-btn" id="savedBtn" aria-label="Saved stories">☆ Saved</button>
+        <button class="chip-btn" id="refreshBtn" aria-label="Refresh news">⟳ Refresh</button>
+        <button class="chip-btn" id="themeBtn" aria-label="Toggle light or dark theme">🌙 Dark</button>
+      </div>
+    </div>
+  </div>
+  <div class="header-main">
+    <div class="wrap header-main-inner">
+      <a href="#" class="logo" onclick="App.go('home');return false;" aria-label="Pulse 24 home">
+        <span class="logo-mark">P</span>
+        <span class="logo-text">Pulse <b>24</b><span class="logo-sub">Global News</span></span>
+      </a>
+      <div class="searchbox">
+        <input type="search" id="searchInput" placeholder="Search headlines…" autocomplete="off" aria-label="Search headlines">
+        <span class="search-ic" aria-hidden="true">🔎</span>
+      </div>
+    </div>
+  </div>
+  <nav class="nav-cats" aria-label="Sections">
+    <div class="wrap nav-cats-inner" id="navCats"></div>
+  </nav>
+</header>
+
+<main class="wrap main" id="main" tabindex="-1"></main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="logo-text serif">Pulse <b>24</b></span>
+        <p>An independent, non-commercial news reader. Headlines and images are aggregated from public RSS feeds (BBC News, The Guardian, Al Jazeera); every story links back to its original source.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Sections</h5>
+        <a onclick="App.go('world')">World</a>
+        <a onclick="App.go('business')">Business</a>
+        <a onclick="App.go('technology')">Technology</a>
+        <a onclick="App.go('science')">Science</a>
+      </div>
+      <div class="footer-col">
+        <h5>More</h5>
+        <a onclick="App.go('health')">Health</a>
+        <a onclick="App.go('sport')">Sport</a>
+        <a onclick="App.go('photos')">In Pictures</a>
+        <a onclick="App.go('saved')">★ Saved stories</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span id="yearStr"></span>
+      <span>Content © respective publishers · This site does not collect personal data.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Reader panel -->
+<div id="reader" class="reader" hidden>
+  <div class="reader-overlay" id="readerOverlay"></div>
+  <aside class="reader-panel" role="dialog" aria-modal="true" aria-label="Article reader">
+    <button class="reader-close" id="readerClose" aria-label="Close reader">✕</button>
+    <div id="readerBody"></div>
+  </aside>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

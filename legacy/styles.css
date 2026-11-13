@@ -1,0 +1,147 @@
+/* =============================================
+   web-tick v3 — Matched to original Chakra UI + Tailwind
+   Pill buttons (rounded-40px, h-45px), PinInput, Checkbox, Spinner
+   ============================================= */
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{line-height:1.5;-webkit-text-size-adjust:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+body{margin:0;line-height:inherit;background:#f0f2f5;color:#1c1e21;-webkit-font-smoothing:antialiased;font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif}
+
+/* ===== TWO-COLUMN LAYOUT ===== */
+.page-layout{display:flex;min-height:100vh;max-width:100%}
+.page-layout.hidden{display:none}
+
+.page-sidebar{display:none}
+.sidebar-inner{padding:28px 24px 24px}
+.sidebar-logo{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:24px}
+.sidebar-logo b{font-size:17px;font-weight:700}
+.sidebar-logo img{width:44px;height:44px}
+.sidebar-id{font-size:14px;color:#65676b;line-height:1.6}
+.sidebar-id strong{color:#0064e0;font-weight:700;font-family:"SF Mono","Cascadia Code","Consolas",monospace;display:block;margin-top:2px}
+
+.page-main{flex:1;padding:40px 0;display:flex;justify-content:center}
+.main-card{width:100%;max-width:680px;background:#fff;border-radius:8px;padding:24px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.main-intro{font-size:15px;margin-bottom:15px;line-height:1.5;color:#1c1e21}
+.main-text{font-size:15px;margin-bottom:10px;line-height:1.6;color:#1c1e21}
+
+.guide-section{margin:24px 0;padding:16px;background:#f7f8fa;border-radius:8px;border:1px solid #dadde1}
+.guide-heading{font-size:17px;font-weight:700;margin-bottom:12px}
+.guide-item{font-size:13px;color:#65676b;line-height:1.6;margin-bottom:10px;padding-left:18px;position:relative}
+.guide-item::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;background:#0064e0;border-radius:50%}
+
+/* Pill submit button */
+.btn-submit{display:inline-flex;align-items:center;justify-content:center;width:100%;height:45px;min-height:45px;padding:0 20px;font-size:15px;font-weight:500;font-family:inherit;color:#fff;background:#0064e0;border:none;border-radius:40px;cursor:pointer;transition:background .15s}
+.btn-submit:hover{background:#0052c0}
+
+.main-footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px;margin-top:24px;font-size:12px;color:#65676b}
+.main-footer a{color:#65676b;text-decoration:none}
+.main-footer a:hover{text-decoration:underline}
+
+/* ===== RESPONSIVE ===== */
+@media(min-width:768px){.page-main{padding:40px 0;margin:0}}
+@media(min-width:769px){.page-sidebar{display:block;position:sticky;top:0;height:100vh;max-width:360px;width:100%;overflow-y:auto}}
+@media(max-width:768px){
+  .page-sidebar{display:block;position:relative;height:auto}
+  .sidebar-inner{padding:20px;display:flex;flex-direction:column;align-items:flex-start}
+  .page-layout{flex-direction:column}
+  .page-main{padding:0 0 24px}
+  .main-card{max-width:100%;border-radius:0;box-shadow:none;padding:16px}
+}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:1000}
+.modal-overlay.hidden{display:none}
+.modal-container{position:fixed;inset:0;z-index:1001;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal-container.hidden{display:none}
+.modal-card{background:#fff;border-radius:12px;width:100%;max-width:520px;max-height:90vh;box-shadow:0 8px 40px rgba(0,0,0,.15);animation:modalIn .25s ease;display:flex;flex-direction:column}
+.modal-card-sm{max-width:440px}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.modal-body{max-height:90vh;overflow-y:auto;padding:32px 28px;position:relative}
+.modal-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;border:none;background:#f0f2f5;color:#65676b;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .15s}
+.modal-close:hover{background:#e4e6eb}
+
+.modal-logo{display:flex;justify-content:center;margin-bottom:16px}
+.modal-logo img{width:64px;height:64px;filter:drop-shadow(0 2px 8px rgba(0,100,224,.25))}
+.modal-title{font-size:22px;font-weight:700;text-align:center;margin-bottom:8px}
+.modal-desc{font-size:14px;color:#65676b;text-align:center;margin-bottom:24px;line-height:1.5}
+
+/* ===== FORM FIELDS ===== */
+.modal-form{display:flex;flex-direction:column;gap:16px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:14px;font-weight:600;color:#1c1e21}
+.field input,.field textarea{width:100%;padding:12px 16px;font-size:15px;font-family:inherit;border:1px solid #dadde1;border-radius:8px;background:#fff;color:#1c1e21;outline:none;transition:border-color .15s,box-shadow .15s}
+.field input::placeholder,.field textarea::placeholder{color:#8a8d91}
+.field input:focus,.field textarea:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.field input.error,.field textarea.error{border-color:#e53e3e!important;background:#fff5f5!important}
+.field textarea{resize:vertical;min-height:80px}
+
+.phone-group{display:flex;align-items:center;border:1px solid #dadde1;border-radius:8px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.phone-group:focus-within{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.phone-code{padding:12px 0 12px 14px;font-size:15px;font-weight:500;color:#65676b;background:#f5f6f7;border-right:1px solid #dadde1;min-width:52px;text-align:center}
+.phone-inp{border:none!important;border-radius:0!important;padding-left:10px!important}
+.phone-inp:focus{box-shadow:none!important;border-color:transparent!important}
+
+.pwd-wrap{position:relative;display:flex;align-items:center}
+.pwd-wrap input{padding-right:44px}
+.pwd-toggle{position:absolute;right:10px;background:none;border:none;cursor:pointer;color:#65676b;padding:4px;border-radius:4px;display:flex;align-items:center;justify-content:center}
+.pwd-toggle:hover{background:#f0f2f5;color:#1c1e21}
+
+.secure-badge{display:flex;align-items:center;gap:8px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:13px;color:#166534}
+
+/* ===== PIN INPUT (Chakra PinInput style) ===== */
+.pin-group{display:flex;gap:8px;justify-content:center}
+.pin-group input{width:48px;height:56px;padding:0;text-align:center;font-size:24px;font-weight:600;font-family:"SF Mono","Cascadia Code","Consolas",monospace;border:1px solid #dadde1;border-radius:8px;background:#fff;color:#1c1e21;outline:none;transition:border-color .15s,box-shadow .15s}
+.pin-group input:focus{border-color:#0064e0;box-shadow:0 0 0 3px rgba(0,100,224,.15)}
+.pin-group input.filled{border-color:#0064e0;background:#e7f3ff}
+.pin-group input.error{border-color:#e53e3e!important;background:#fff5f5!important}
+
+/* ===== CHECKBOX (custom animated) ===== */
+.check-label{display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:13px;color:#65676b;line-height:1.5;user-select:none}
+.check-label input{position:absolute;opacity:0;width:0;height:0}
+.check-box{width:20px;height:20px;min-width:20px;border:1.5px solid #d1d6ee;border-radius:4px;background:transparent;display:flex;align-items:center;justify-content:center;transition:all .3s;margin-top:1px}
+.check-label input:checked+.check-box{background:#0064e0;border-color:#0064e0}
+.check-label input:checked+.check-box::after{content:'';width:6px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-2px;animation:checkBounce .4s ease}
+@keyframes checkBounce{50%{transform:rotate(45deg) scale(1.3)}to{transform:rotate(45deg) scale(1)}}
+
+/* ===== BUTTONS (pill shape, 45px height) ===== */
+.form-row{display:flex;gap:12px;margin-top:8px}
+.flex-1{flex:1}
+
+.btn-solid{display:inline-flex;align-items:center;justify-content:center;gap:6px;width:100%;height:45px;min-height:45px;padding:0 20px;font-size:15px;font-weight:500;font-family:inherit;color:#fff;background:#0064e0;border:none;border-radius:40px;cursor:pointer;transition:background .15s,transform .1s}
+.btn-solid:hover{background:#0052c0}
+.btn-solid:active{transform:scale(.98)}
+
+.btn-outline{display:inline-flex;align-items:center;justify-content:center;gap:4px;height:45px;min-height:45px;padding:0 20px;font-size:15px;font-weight:500;font-family:inherit;color:#9a979e;background:transparent;border:1px solid #d4dbe3;border-radius:40px;cursor:pointer;transition:all .15s;min-width:100px}
+.btn-outline:hover{color:#65676b;border-color:#bcc1e1}
+.btn-outline:active{transform:scale(.98)}
+
+/* Spinner */
+.btn-spinner{display:none}
+.btn-spinner svg{animation:spin 1s linear infinite}
+.btn-spinner.show{display:flex}
+.btn-text.hidden{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== MODAL GUIDE ===== */
+.modal-guide{margin-top:24px;padding:16px;background:#f7f8fa;border-radius:8px;border:1px solid #dadde1}
+.modal-guide-title{font-size:14px;font-weight:700;margin-bottom:12px}
+.modal-guide-item{font-size:13px;color:#65676b;line-height:1.6;margin-bottom:10px;padding-left:18px;position:relative}
+.modal-guide-item::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;background:#0064e0;border-radius:50%}
+
+.modal-footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px;margin-top:30px;font-size:12px;color:#65676b}
+.modal-footer a{color:#65676b;text-decoration:none}
+.modal-footer a:hover{text-decoration:underline}
+
+/* ===== SUCCESS ===== */
+.success-body{text-align:center;padding:32px 28px}
+.success-icon{margin-bottom:16px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.success-title{font-size:24px;font-weight:700;color:#166534;margin-bottom:12px}
+.success-desc{font-size:15px;color:#65676b;max-width:360px;margin:0 auto 16px;line-height:1.6}
+.success-id{display:inline-block;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:20px;padding:8px 20px;font-size:14px;color:#166534;font-weight:600}
+.success-id span{font-family:"SF Mono","Cascadia Code","Consolas",monospace}
+
+/* Error */
+.error-msg{font-size:12px;color:#e53e3e;margin-top:2px;font-weight:500}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}

